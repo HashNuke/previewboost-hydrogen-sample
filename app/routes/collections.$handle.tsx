@@ -11,7 +11,26 @@ import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  const metaTags = [
+    {title: `Hydrogen | ${data?.collection.title ?? ''} Collection`},
+    {
+      property: 'og:title',
+      content: `${data?.collection.title ?? ''}`,
+    },
+  ];
+
+  if (data?.collection?.og_image_url?.value) {
+    metaTags.unshift({
+      property: 'og:image:secure_url',
+      content: data.collection.og_image_url.value,
+    });
+    metaTags.unshift({
+      property: 'og:image',
+      content: data.collection.og_image_url.value,
+    });
+  }
+
+  return metaTags;
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -177,6 +196,9 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      og_image_url: metafield(namespace: "app--123", key: "og_image_url") {
+        value
+      }
       products(
         first: $first,
         last: $last,

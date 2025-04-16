@@ -5,7 +5,26 @@ import type {ArticleItemFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
+  const metaTags = [
+    {title: `Hydrogen | ${data?.blog.title ?? ''} blog`},
+    {
+      property: 'og:title',
+      content: `${data?.blog.title ?? ''}`,
+    },
+  ];
+
+  if (data?.blog?.og_image_url?.value) {
+    metaTags.unshift({
+      property: 'og:image:secure_url',
+      content: data.blog.og_image_url.value,
+    });
+    metaTags.unshift({
+      property: 'og:image',
+      content: data.blog.og_image_url.value,
+    });
+  }
+
+  return metaTags;
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -148,7 +167,6 @@ const BLOGS_QUERY = `#graphql
           endCursor
           startCursor
         }
-
       }
     }
   }
@@ -170,6 +188,9 @@ const BLOGS_QUERY = `#graphql
     title
     blog {
       handle
+    }
+    og_image_url: metafield(namespace: "app--123", key: "og_image_url") {
+      value
     }
   }
 ` as const;

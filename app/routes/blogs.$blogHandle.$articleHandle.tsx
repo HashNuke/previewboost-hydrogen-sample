@@ -3,7 +3,26 @@ import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.article.title ?? ''} article`}];
+  const metaTags = [
+    {title: `Hydrogen | ${data?.article.title ?? ''} article`},
+    {
+      property: 'og:title',
+      content: `${data?.article.title ?? ''}`,
+    },
+  ];
+
+  if (data?.article?.og_image_url?.value) {
+    metaTags.unshift({
+      property: 'og:image:secure_url',
+      content: data.article.og_image_url.value,
+    });
+    metaTags.unshift({
+      property: 'og:image',
+      content: data.article.og_image_url.value,
+    });
+  }
+
+  return metaTags;
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -106,6 +125,9 @@ const ARTICLE_QUERY = `#graphql
         seo {
           description
           title
+        }
+        og_image_url: metafield(namespace: "app--123", key: "og_image_url") {
+          value
         }
       }
     }

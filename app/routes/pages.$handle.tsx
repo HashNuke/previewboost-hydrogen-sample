@@ -2,7 +2,26 @@ import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.page.title ?? ''}`}];
+  const metaTags = [
+    {title: `Hydrogen | ${data?.page.title ?? ''}`},
+    {
+      property: 'og:title',
+      content: `${data?.page.title ?? ''}`,
+    },
+  ];
+
+  if (data?.page?.og_image_url?.value) {
+    metaTags.unshift({
+      property: 'og:image:secure_url',
+      content: data.page.og_image_url.value,
+    });
+    metaTags.unshift({
+      property: 'og:image',
+      content: data.page.og_image_url.value,
+    });
+  }
+
+  return metaTags;
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -78,6 +97,9 @@ const PAGE_QUERY = `#graphql
       seo {
         description
         title
+      }
+      og_image_url: metafield(namespace: "app--123", key: "og_image_url") {
+        value
       }
     }
   }

@@ -13,13 +13,30 @@ import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [
+  const metaTags = [
     {title: `Hydrogen | ${data?.product.title ?? ''}`},
     {
       rel: 'canonical',
       href: `/products/${data?.product.handle}`,
     },
+    {
+      property: 'og:title',
+      content: `${data?.product.title ?? ''}`,
+    },
   ];
+
+  if (data?.product?.og_image_url?.value) {
+    metaTags.unshift({
+      property: 'og:image:secure_url',
+      content: data.product.og_image_url.value,
+    });
+    metaTags.unshift({
+      property: 'og:image',
+      content: data.product.og_image_url.value,
+    });
+  }
+
+  return metaTags;
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -212,6 +229,9 @@ const PRODUCT_FRAGMENT = `#graphql
     seo {
       description
       title
+    }
+    og_image_url: metafield(namespace: "app--123", key: "og_image_url") {
+      value
     }
   }
   ${PRODUCT_VARIANT_FRAGMENT}
