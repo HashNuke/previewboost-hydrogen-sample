@@ -112,22 +112,22 @@ This repo contains a Hydrogen theme to which we've already made changes to suppo
 
 > **IMPORTANT**: We specifically use `unshift` when adding the `meta` tags, because we want the Previewboost meta tags to appear on top, before any other meta tag.
 
-### <app/routes/collections.$handle.tsx>
+### `app/routes/collections.$handle.tsx`
 
 * Added `og_image_url` metafield to fetch in the collection query.
 * Updated the `meta` export in the file, to set the `og:image` and `og:image:secure_url` if available.
 
-### <app/routes/products.$handle.tsx>
+### `app/routes/products.$handle.tsx`
 
 * Added `og_image_url` metafield to fetch in the the Product fragment.
 * Updated the `meta` export in the file, to set the `og:image` and `og:image:secure_url` if available.
 
-### <app/routes/pages.$handle.tsx>
+### `app/routes/pages.$handle.tsx`
 
 * Updated the page query to fetch the `og_image_url` metafield.
 * Updated the `meta` export in the file, to set the `og:image` and `og:image:secure_url` if available.
 
-###  <app/routes/blogs.$blogHandle.$articleHandle.tsx>
+### `app/routes/blogs.$blogHandle.$articleHandle.tsx`
 
 * Updated the article query to fetch the `og_image_url` metafield.
 * Updated the `meta` export in the file, to set the `og:image` and `og:image:secure_url` if available.
